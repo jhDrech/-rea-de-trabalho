@@ -101,18 +101,24 @@ public class ContatoDAO {
     public ArrayList<Contato> select(Contato contato){
         Connection con = ConnectionFactory.getConnection();
         ArrayList<Contato> tuplaContatos = new ArrayList<>();
-        String sql = "select from Contato where id=?";
+        String sql = "select * from contatos join enderecos on enderecos.id=contatos.id_endereco;";
         ResultSet rs = psEndereco.getGeneratedKeys();
         int idEndereco = 0;
-        while (rs.next()){
             try {
-                PreparedStatement psEndereco = 
-                con.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
-                psEndereco.setInt(1, contato.getId()); 
-                    
+                PreparedStatement ps = con.prepareStatement(sqlContato); 
+                ResultSet rs = ps.executequery();
+                while (rs.next()) {
+                    Endereco end = new Endereco();
+                    end.setId(rs.getInt("id_endereco"));
+                    end.setRua(rs.getString("rua"));
+                    //blalbalba
+                }
+                Contato cont = new Contato();
+                cont.setId(rs.getInt("id")); 
+                //blablabla
+                cont.setEndereco(end);
+                contatos.add(cont);
                 //para o resultSet posicoes atributos na tabela 1,2,3...
-                if(rs.next()) idEndereco=rs.getInt(1);//pega o primeiro atributo da tabela
-    
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }    
