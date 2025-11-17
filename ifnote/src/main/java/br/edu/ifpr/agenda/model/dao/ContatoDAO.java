@@ -102,12 +102,21 @@ public class ContatoDAO {
         Connection con = ConnectionFactory.getConnection();
         ArrayList<Contato> tuplaContatos = new ArrayList<>();
         String sql = "select from Contato where id=?";
-        try {
-            PreparedStatement psEndereco = 
-            con.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
-            psEndereco.setString(1, contato.getId()); 
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        ResultSet rs = psEndereco.getGeneratedKeys();
+        int idEndereco = 0;
+        while (rs.next()){
+            try {
+                PreparedStatement psEndereco = 
+                con.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+                psEndereco.setInt(1, contato.getId()); 
+                    
+                //para o resultSet posicoes atributos na tabela 1,2,3...
+                if(rs.next()) idEndereco=rs.getInt(1);//pega o primeiro atributo da tabela
+    
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }    
         }
+        return null;
     }
 }
