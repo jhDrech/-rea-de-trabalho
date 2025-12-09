@@ -107,7 +107,7 @@ public class AgendaView{
 
 
             mostrarTarefas(); 
-            System.out.println("0:|Criar tarefa| 1:|Postar tarefa| 2:|Inspecionar tarefa| 3:|Alterar tarefa existente| 4:|Deletar tarefa| 5:|Ver Feed| 6:|Ver Posts| 7:|Deslogar|");
+            System.out.println("0:|Criar tarefa| 1:|Postar tarefa| 2:|Inspecionar tarefa| 3:|Alterar tarefa existente| 4:|Deletar tarefa| 5:|Ver Feed| 6:|Ver Posts| 7:|Encerrar|");
             int input = sc.nextInt();
             sc.nextLine();
 
@@ -207,24 +207,50 @@ public class AgendaView{
         sc.nextLine();
     }
 
+    public void deletarPostagem(){
+        System.out.println("=========== DELETAR POSTAGEM ===========");
+        System.out.println("Nome do post que deseja deletar:");
+        String nome = sc.nextLine();
+        Post p = pControl.selecionarPost(nome);
+        pControl.deletarPost(p);
+        System.out.println("----------------------------------------");
+    }
+
     public void mostrarMeusPosts(){
         limparTela();
         System.out.println("========== MEUS POSTS (@" + SessaoUser.getUserLogado().getUsername() + ") ==========");
-        ArrayList<Post> meusPosts = pControl.obterPosts(); 
+        ArrayList<Post> meusPosts = pControl.obterPosts();// recebe os posts do banco 
         
-        if (meusPosts.isEmpty()) {
+        if (meusPosts.isEmpty()) { // se a lista tiver vazia informa que nenhum post existe ainda
             System.out.println("Você ainda não publicou nenhum post");
         } else {
-            // Exibe os post com o índice para referência futura
+            // exibe os post com o índice para referência futura
             for (int i = 0; i < meusPosts.size(); i++) {
                 Post p = meusPosts.get(i);
-                System.out.printf(" [%d] | Post: %s | Data: %s\n", 
-                i, p.getNome(), p.getDataPostagem());
+                System.out.printf(" [%d] | Post: %s | Data: %s\n", i, p.getNome(), p.getDataPostagem());
             }
+            menuMeusPosts();
         }
         System.out.println("----------------------------------------");
         System.out.println("Pressione Enter para retornar");
         sc.nextLine();
+    }
+
+    public void menuMeusPosts(){
+        while(true){
+            System.out.println();
+            System.out.println("0:|Prosseguir| 1:|Deletar post|");
+            int input = validarInputDeControle(0, 1);
+            switch (input) {
+                case 0:
+                    return;
+                case 1:
+                    deletarPostagem();
+                    break;
+                default:
+                    throw new AssertionError();
+            }
+        }
     }
 
     public void criarTarefa(){
@@ -247,7 +273,6 @@ public class AgendaView{
 
     public void alterarTarefa(){
         limparTela(); 
-        sc.nextLine();
         System.out.println("Qual tarefa você deja alterar?");
         String nome = sc.nextLine();
         Tarefa t = tControl.selecionarTarefa(nome);
@@ -276,7 +301,6 @@ public class AgendaView{
 
     public void deletarTarefa(){
         limparTela();
-        sc.nextLine();
         System.out.println("Insira o nome da tarefa que deseja deletar:");
         String nome = sc.nextLine();
         Tarefa t = tControl.selecionarTarefa(nome);

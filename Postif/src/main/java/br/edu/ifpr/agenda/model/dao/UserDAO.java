@@ -5,17 +5,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 
-import br.edu.ifpr.agenda.model.User;
 import br.edu.ifpr.agenda.model.SessaoUser;
+import br.edu.ifpr.agenda.model.User;
 
 public class UserDAO {
 
     public User registrar(User u){
         Connection con = ConnectionFactory.getConnection();
 
-        //inserir o tereco primeiro
         String sqltarefa = "INSERT INTO user (nome, email, nascimento, username, senha) VALUES(?,?,?,?,?)";
         try {//posicoes atributos na tabela 0,1,2 ...
             PreparedStatement psUser = con.prepareStatement(sqltarefa,Statement.RETURN_GENERATED_KEYS);

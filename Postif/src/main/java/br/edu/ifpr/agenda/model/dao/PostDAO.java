@@ -76,21 +76,27 @@ public class PostDAO {
         }
     }
 
-    public void deletarPost(Post p){
+    public boolean deletarPost(Post p){
         int userLogadoId = SessaoUser.getUserId();
 
         Connection con = ConnectionFactory.getConnection();
-        String sql = "DELETE FROM posts WHERE nome = ? and userId = ? ";
+        String sql = "DELETE FROM posts WHERE id = ? and userId = ? ";
         try{
             PreparedStatement psPost = 
             con.prepareStatement(sql);
-            psPost.setString(1, p.getNome());   
+            psPost.setInt(1, p.getPostId());   
             psPost.setInt(2, userLogadoId);
-            psPost.executeUpdate();
+
+            int numAlteracoes = psPost.executeUpdate();
+            if(numAlteracoes > 0){
+                System.out.println("Post deletado!"); 
+               return true;
+            } 
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Erro ao deletar o post do banco: " + e.getMessage());
         }
+        return false;
     } 
 
         public ArrayList<Post> listarPosts(){
@@ -109,6 +115,7 @@ public class PostDAO {
                 p.setPostId(rs.getInt("id"));
                 p.setNome(rs.getString("nome"));
                 p.setDescricaoPost(rs.getString("descricao"));
+                p.setDataPostagem(rs.getString("dataPostagem"));
 
                 posts.add(p);
             }  
@@ -124,7 +131,7 @@ public class PostDAO {
         User u = SessaoUser.getUserLogado(); 
         ArrayList<Post> posts = new ArrayList<>();
     
-        String sql = "SELECT posts.id, posts.dataPostagem, posts.nome, user.username FROM posts JOIN user ON posts.userId = user.id";
+        String sql = "SELECT posts.id, posts.dataPostagem, posts.nome, posts.descricao, user.username FROM posts JOIN user ON posts.userId = user.id";
         Connection con = ConnectionFactory.getConnection();
         try {
             PreparedStatement ps = con.prepareStatement(sql);
@@ -132,6 +139,7 @@ public class PostDAO {
             while (rs.next()) {
                 Post p = new Post();
                 p.setPostId(rs.getInt("id"));
+                p.setDescricaoPost(rs.getString("descricao"));
                 p.setDataPostagem(rs.getString("dataPostagem"));
 
                 p.setNomeAutor(rs.getString("username"));    

@@ -2,8 +2,10 @@ package br.edu.ifpr.agenda.controller;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import br.edu.ifpr.agenda.model.*;
-import br.edu.ifpr.agenda.model.dao.*;
+import br.edu.ifpr.agenda.model.Post;
+import br.edu.ifpr.agenda.model.Tarefa;
+import br.edu.ifpr.agenda.model.dao.PostDAO;
+import br.edu.ifpr.agenda.model.dao.TarefaDAO;
 
 public class PostController {
     final static Scanner sc = new Scanner(System.in);
@@ -32,6 +34,16 @@ public class PostController {
 
     public ArrayList<Post> obterFeed(){
         return pDAO.listarTodosPosts();
+    }
+
+
+    public boolean deletarPost(Post p) {
+        boolean sucesso = pDAO.deletarPost(p);
+    
+        if (!sucesso) {
+            System.out.println("post não encontrado.");
+        }
+        return sucesso;
     }
 
     public Post selecionarPost(String post){
